@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Virale в ChatPlace</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: кейс одной колонкой ~1080px; герой → исследование → решение со схемой «было/стало» → живой прототип → второстепенные улучшения */
+:root{
+  --bg:#FFFFFF; --soft:#F6F7F9; --card:#FFFFFF; --ink:#11181C; --muted:#5F676D; --line:#E6E8EB;
+  --brand:#3C61DD; --brand-ink:#FFFFFF; --brand-soft:#EEF2FD; --virale:#F3F357; --dark:#1B1D1F; --dark-ink:#ECEDEE;
+  --f:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --r:16px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111314; --soft:#17191B; --card:#1A1D1E; --ink:#ECEDEE; --muted:#9BA1A6; --line:#2A2E31;
+  --brand:#6E8FF0; --brand-ink:#0B1020; --brand-soft:#1C2541; --virale:#E6E86A; --dark:#0B0C0D; --dark-ink:#ECEDEE; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111314; --soft:#17191B; --card:#1A1D1E; --ink:#ECEDEE; --muted:#9BA1A6; --line:#2A2E31;
+  --brand:#6E8FF0; --brand-ink:#0B1020; --brand-soft:#1C2541; --virale:#E6E86A; --dark:#0B0C0D; --dark-ink:#ECEDEE; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:17px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
+.wrap{max-width:1080px;margin:0 auto}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.02em}
+h1{font-size:clamp(36px,6vw,64px);line-height:1.04;font-weight:800}
+h2{font-size:clamp(26px,3.4vw,38px);line-height:1.12;font-weight:700}
+h3{font-size:19px;line-height:1.3;font-weight:600;letter-spacing:-.01em}
+p{margin:0;max-width:64ch}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+.muted{color:var(--muted)}
+a{color:var(--brand)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:3px;border-radius:6px}
+section{padding-block:72px;display:flex;flex-direction:column;gap:28px}
+.shead{display:flex;flex-direction:column;gap:12px}
+
+/* hero */
+.hero{padding-block:40px 64px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:48px;align-items:center}
+.hero .txt{display:flex;flex-direction:column;gap:22px}
+.lead{font-size:20px;line-height:1.5;color:var(--muted);max-width:52ch}
+.lead b{color:var(--ink);font-weight:600}
+.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:12px;font:inherit;font-size:15px;font-weight:600;text-decoration:none;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.btn.p{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn svg{width:18px;height:18px}
+
+.heroimg{display:block;width:100%;height:auto;border-radius:16px;border:1px solid var(--line);box-shadow:0 12px 40px rgba(17,24,28,.12)}
+.topbar{display:flex;justify-content:flex-end;padding-top:20px}
+.btn.sm{height:38px;padding:0 14px;font-size:14px}
+.i-sun{display:none}
+.heroimg.d{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .heroimg.l{display:none}:root:not([data-theme="light"]) .heroimg.d{display:block}}
+:root[data-theme="dark"] .heroimg.l{display:none}
+:root[data-theme="dark"] .heroimg.d{display:block}
+.dark .i-sun{display:block}.dark .i-moon{display:none}
+/* mini app schematic */
+.ba{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.hero .ba{grid-template-columns:1fr}
+.shot{display:flex;flex-direction:column;gap:10px;min-width:0}
+.shot .lbl{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600}
+.pill{font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px}
+.pill.bad{background:#FDECEA;color:#B4322A}
+.pill.good{background:#E6F6EA;color:#1E7A3E}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pill.bad{background:#3A1C1A;color:#F0857C}:root:not([data-theme="light"]) .pill.good{background:#163323;color:#6FD196}}
+:root[data-theme="dark"] .pill.bad{background:#3A1C1A;color:#F0857C}
+:root[data-theme="dark"] .pill.good{background:#163323;color:#6FD196}
+.mini{aspect-ratio:16/10;max-width:100%;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;background:var(--card);font-size:10px}
+.mini .nav{width:26%;border-right:1px solid var(--line);padding:10px 8px;display:flex;flex-direction:column;gap:5px;background:var(--card)}
+.mini .nav.v{background:var(--dark);border-color:var(--dark)}
+.mini .nav i{display:block;height:7px;border-radius:4px;background:var(--line)}
+.mini .nav.v i{background:#34373A}
+.mini .nav i.on{background:var(--brand-soft);box-shadow:inset 0 0 0 1px var(--brand)}
+.mini .nav.v i.sw{background:var(--virale);opacity:.85;height:9px;margin-bottom:6px}
+.mini .nav .logo{height:8px;width:60%;border-radius:3px;background:var(--ink);opacity:.8;margin-bottom:6px}
+.mini .body{flex:1;padding:10px 12px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.mini .bar{height:9px;width:40%;border-radius:4px;background:var(--ink);opacity:.75}
+.mini .tabs{display:flex;gap:6px}
+.mini .tabs i{display:block;height:6px;width:16%;border-radius:3px;background:var(--line)}
+.mini .tabs i.on{background:var(--brand)}
+.mini .box{flex:1;border-radius:8px;background:var(--soft);border:1px dashed var(--line)}
+.mini .hero-v{height:28%;border-radius:8px;background:linear-gradient(180deg,var(--dark),var(--dark) 55%,var(--virale) 160%)}
+.mini.dark .body{background:var(--dark)}
+.mini.dark .box{background:#232628;border-color:#2E3134}
+.cap{font-size:14px;color:var(--muted);max-width:44ch}
+
+/* steps + facts */
+.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.step{background:var(--soft);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.num{width:32px;height:32px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:700;font-size:15px}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0;padding:0;list-style:none}
+.facts li{border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;gap:12px;align-items:flex-start;min-width:0}
+.facts li svg{flex:none;width:20px;height:20px;color:var(--brand);margin-top:3px}
+.q{font-weight:600}
+.verdict{background:var(--dark);color:var(--dark-ink);border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:14px}
+.verdict h3{font-size:22px}
+.verdict p{color:#C9CDD1;max-width:70ch}
+.tag{align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:.04em;padding:4px 10px;border-radius:99px;background:rgba(243,243,87,.16);color:var(--virale)}
+
+/* solution */
+.sol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0;padding:0;list-style:none}
+.sol li{background:var(--soft);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.sol li p{font-size:16px;color:var(--muted)}
+
+/* prototype */
+.pwrap{position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#E8EAEE}
+.pwrap iframe{display:block;width:100%;aspect-ratio:1440/1040;border:0;background:#E8EAEE}
+.ptools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.ptools .muted{font-size:15px}
+.pwrap .close{display:none;position:absolute;top:max(12px,env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:3}
+.pwrap.full,.pwrap:fullscreen{border-radius:0;border:0}
+.pwrap.full{position:fixed;inset:0;z-index:100}
+.pwrap.full iframe,.pwrap:fullscreen iframe{width:100%;height:100%;aspect-ratio:auto}
+.pwrap.full .close,.pwrap:fullscreen .close{display:inline-flex}
+.kbd{font-size:13px;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 6px;font-weight:600}
+
+/* extras */
+.extras{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.ex{border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.ex ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;color:var(--muted)}
+.ex ul li::marker{color:var(--brand)}
+.note{font-size:15px;color:var(--muted)}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr;gap:32px;padding-block:48px}
+  .steps,.facts,.sol,.extras,.ba{grid-template-columns:1fr}
+  section{padding-block:52px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+
+<script>(function(){var t=null;try{t=localStorage.getItem('lp-theme');}catch(e){}document.documentElement.dataset.theme=t||'dark';})();</script>
+
+<div class="wrap">
+<div class="topbar"><button type="button" class="btn sm" id="themebtn" aria-pressed="false"><svg class="i-moon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7z"/></svg><svg class="i-sun" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.5v2M10 16.5v2M1.5 10h2M16.5 10h2M4 4l1.4 1.4M14.6 14.6L16 16M4 16l1.4-1.4M14.6 5.4L16 4"/></svg><span id="themelbl">Тёмная тема</span></button></div>
+
+<header class="hero">
+  <div class="txt">
+    <span class="eyebrow">Кейс · ChatPlace</span>
+    <h1>Virale как часть ChatPlace</h1>
+    <p class="lead"><b>Задача:</b> сделать понятным возврат из Virale в ChatPlace. Когда пользователь открывал Virale, главное меню ChatPlace пропадало, и вместо него появлялось меню Virale. Вернуться можно было только через малозаметный переключатель «Virale / ChatPlace» в верхнем углу.</p>
+    <div class="cta">
+      <a class="btn p" href="#prototype"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 4.5l9 5.5-9 5.5z"/></svg>Открыть прототип</a>
+      <a class="btn" href="#research">Как я пришёл к решению</a>
+    </div>
+  </div>
+  <img class="heroimg l" src="hero.webp" width="1440" height="960" alt="Обновлённый раздел Virale: слева главное меню ChatPlace, сверху табы Virale">
+  <img class="heroimg d" src="hero-dark.webp" width="1440" height="960" alt="Обновлённый раздел Virale в тёмной теме">
+</header>
+
+<section id="research">
+  <div class="shead"><span class="eyebrow">Что я сделал</span><h2>Сначала разобрался, что такое Virale для ChatPlace</h2></div>
+  <div class="steps">
+    <div class="step"><span class="num">1</span><h3>Определил роль Virale</h3><p class="muted">Разобрался, чем Virale является для ChatPlace: частью сервиса или отдельным продуктом. Для этого прошёл онбординг и изучил тарифные планы.</p></div>
+    <div class="step"><span class="num">2</span><h3>Изучил базовый сценарий</h3><p class="muted">Прошёл основной путь пользователя в Virale. На детальное изучение всех сценариев времени не хватило, поэтому я сосредоточился на главном.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="eyebrow">Что выяснилось</span><h2>Virale не отдельный продукт, а часть ChatPlace</h2><p class="muted">Это видно по нескольким признакам:</p></div>
+  <ul class="facts">
+    <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg><span>В онбординге ChatPlace есть шаг про Virale: <span class="q">«Получить готовые сценарии для Reels и посты-карусели через Virale»</span>.</span></li>
+    <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg><span>Тариф Creator описан как <span class="q">«полный доступ к Virale и всем функциям ChatPlace»</span>, то есть подписка общая.</span></li>
+    <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg><span>У Virale и ChatPlace общий аккаунт и общий проект.</span></li>
+    <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg><span>В меню Virale дублировались разделы ChatPlace: Уроки, MCP-коннектор, Чат-боты.</span></li>
+  </ul>
+  <div class="verdict">
+    <h3>Вывод</h3>
+    <p>Раз Virale — часть ChatPlace, то и выглядеть он должен как обычный раздел. В текущем виде пользователь, заходя в Virale, как будто попадает в другое приложение и теряет главное меню. Тогда он ищет дорогу обратно через кнопку «Назад» в браузере, а не через интерфейс сервиса. Это неудобно и может снижать удержание пользователей.</p>
+    <span class="tag">Это гипотеза</span>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="eyebrow">Решение</span><h2>Virale стал таким же разделом, как остальные</h2></div>
+  <div class="ba">
+    <figure class="shot" style="margin:0">
+      <figcaption class="lbl">Было <span class="pill bad">отдельное меню Virale</span></figcaption>
+      <div class="mini dark" role="img" aria-label="Схема «было»: тёмное меню Virale на месте меню ChatPlace">
+        <div class="nav v"><i class="sw"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="body"><div class="hero-v"></div><div class="box"></div></div>
+      </div>
+      <p class="cap">15 пунктов меню, вернуться в ChatPlace можно только через переключатель вверху.</p>
+    </figure>
+    <figure class="shot" style="margin:0">
+      <figcaption class="lbl">Стало <span class="pill good">меню ChatPlace всегда на месте</span></figcaption>
+      <div class="mini" role="img" aria-label="Схема «стало»: меню ChatPlace слева, Virale выделен в нём, в рабочей области шапка и табы">
+        <div class="nav"><span class="logo"></span><i></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="body"><div class="bar"></div><div class="tabs"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div><div class="box"></div></div>
+      </div>
+      <p class="cap">Virale — пункт главного меню, его разделы стали табами под шапкой.</p>
+    </figure>
+  </div>
+  <ul class="sol">
+    <li><h3>Главное меню всегда видно</h3><p>В том числе внутри Virale. Отдельный переключатель «Virale / ChatPlace» больше не нужен.</p></li>
+    <li><h3>Один шаблон для всех разделов</h3><p>Шапка с названием, выбором аккаунта и главной кнопкой, под ней табы.</p></li>
+    <li><h3>15 пунктов меню → 6 табов</h3><p>Главная, Чаты с агентом, Мой контент, Память, Вдохновение, Лига креаторов.</p></li>
+    <li><h3>Без дублей</h3><p>Уроки ведут в «Обучение», MCP-коннектор живёт в «Настройках», чат-боты — в «Автоматизации». Кнопка «Как пользоваться?» в Virale ведёт в «Обучение».</p></li>
+  </ul>
+</section>
+
+<section id="prototype">
+  <div class="shead"><span class="eyebrow">Прототип</span><h2>Попробуйте сами</h2><p class="muted">Кликабельный прототип обновлённого кабинета. Переходите по разделам через меню слева, по табам внутри Virale или стрелками на панели под экраном.</p></div>
+  <div class="ptools">
+    <span class="muted">Клавиши <span class="kbd">←</span> <span class="kbd">→</span> листают экраны. Внизу прототипа можно включить тёмную тему и подсветку кликабельных мест.</span>
+    <button type="button" class="btn p" id="fsbtn"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5V3h4.5M17 7.5V3h-4.5M3 12.5V17h4.5M17 12.5V17h-4.5"/></svg>На весь экран</button>
+  </div>
+  <div class="pwrap" id="pwrap">
+    <iframe id="proto" src="prototype.html" title="Прототип ChatPlace" loading="lazy"></iframe>
+    <button type="button" class="btn close" id="fsclose" aria-label="Выйти из полноэкранного режима">✕ Закрыть</button>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="eyebrow">Дополнительно</span><h2>Что ещё улучшил по ходу работы</h2><p class="muted">Это не основная задача, но эти правки делают кабинет единообразнее.</p></div>
+  <div class="extras">
+    <div class="ex"><h3>Навигация</h3><ul>
+      <li>В главном меню по умолчанию видны названия разделов, а не только иконки. Меню можно свернуть до иконок.</li>
+      <li>Убрал второе боковое меню, которое в одних разделах было, а в других нет. Его содержимое перенесено в рабочую область: подразделы стали табами, фильтры — тегами над списком.</li>
+      <li>Выбор аккаунта теперь выглядит одинаково и стоит в одном месте шапки во всех разделах. Раньше он был тремя разными способами.</li>
+      <li>Карточка профиля переехала вниз главного меню.</li>
+    </ul></div>
+    <div class="ex"><h3>Интерфейс</h3><ul>
+      <li>В ИИ-менеджере и Рассылках убрал вторую кнопку «Создать». Теперь на экране одна главная кнопка.</li>
+      <li>Добавил тёмную тему.</li>
+    </ul></div>
+  </div>
+</section>
+
+</div>
+
+<script>
+const tb=document.getElementById('themebtn'),tl=document.getElementById('themelbl'),root=document.documentElement,mq=matchMedia('(prefers-color-scheme: dark)');
+function isDark(){const t=root.dataset.theme;return t?t==='dark':mq.matches;}
+function syncProto(){try{const f=document.getElementById('proto');const d=f.contentDocument;if(!d||!d.documentElement)return;d.documentElement.dataset.theme=isDark()?'dark':'light';f.contentWindow.syncTheme&&f.contentWindow.syncTheme();}catch(e){}}
+function syncTheme(){const d=isDark();tb.setAttribute('aria-pressed',d);tb.classList.toggle('dark',d);tl.textContent=d?'Светлая тема':'Тёмная тема';syncProto();}
+tb.addEventListener('click',()=>{root.dataset.theme=isDark()?'light':'dark';try{localStorage.setItem('lp-theme',root.dataset.theme)}catch(e){}syncTheme();});
+{let t=null;try{t=localStorage.getItem('lp-theme');}catch(e){}root.dataset.theme=t||'dark';}
+mq.addEventListener('change',syncTheme);document.getElementById('proto').addEventListener('load',syncProto);syncTheme();
+const wrap=document.getElementById('pwrap'),btn=document.getElementById('fsbtn'),cls=document.getElementById('fsclose');
+function openFull(){
+  const fallback=()=>{wrap.classList.add('full');document.documentElement.style.overflow='hidden';cls.focus();};
+  try{
+    if(wrap.requestFullscreen){wrap.requestFullscreen().then(()=>cls.focus()).catch(fallback);}
+    else if(wrap.webkitRequestFullscreen){wrap.webkitRequestFullscreen();}
+    else fallback();
+  }catch(e){fallback();}
+}
+function closeFull(){
+  if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}
+  wrap.classList.remove('full');document.documentElement.style.overflow='';btn.focus();
+}
+btn.addEventListener('click',openFull);
+cls.addEventListener('click',closeFull);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&wrap.classList.contains('full'))closeFull();});
+</script>
+
+</body>
+</html>
